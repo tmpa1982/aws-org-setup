@@ -1,7 +1,5 @@
 # PowerShell script to deploy the Organization Structure CloudFormation stack
 param (
-    [Parameter(Mandatory=$true)]
-    [string]$AccountEmail,
     [string]$ParentId
 )
 
@@ -31,7 +29,7 @@ Write-Host "Deploying stack '$stackName' to account $($identity.Account) with pr
 aws cloudformation deploy `
     --stack-name $stackName `
     --template-file $templatePath `
-    --parameter-overrides AccountEmail=$AccountEmail ParentId=$ParentId `
+    --parameter-overrides ParentId=$ParentId `
     --profile admin `
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM `
     --no-fail-on-empty-changeset

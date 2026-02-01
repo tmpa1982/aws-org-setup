@@ -5,8 +5,13 @@ Parameters:
   ParentId:
     Type: String
     Description: The ID of the parent root or OU where the NonProduction OU will be created.
-  AccountEmail:
+  SharedServicesAccountEmail:
     Type: String
+    Default: tran.minh.phuong.anh+awsshared@gmail.com
+    Description: The email address for the shared-services account. This must be a unique email not associated with another AWS account.
+  ApplicationDevAccountEmail:
+    Type: String
+    Default: tran.minh.phuong.anh+awsappdev@gmail.com
     Description: The email address for the application-dev account. This must be a unique email not associated with another AWS account.
 
 Resources:
@@ -16,11 +21,19 @@ Resources:
       Name: NonProduction
       ParentId: !Ref ParentId
 
+  SharedServicesAccount:
+    Type: AWS::Organizations::Account
+    Properties:
+      AccountName: shared-services
+      Email: !Ref SharedServicesAccountEmail
+      ParentIds:
+        - !Ref ParentId
+
   ApplicationDevAccount:
     Type: AWS::Organizations::Account
     Properties:
       AccountName: application-dev
-      Email: !Ref AccountEmail
+      Email: !Ref ApplicationDevAccountEmail
       ParentIds: 
         - !Ref NonProductionOU
 
@@ -31,3 +44,6 @@ Outputs:
   ApplicationDevAccountId:
     Description: The ID of the application-dev account.
     Value: !Ref ApplicationDevAccount
+  SharedServicesAccountId:
+    Description: The ID of the shared-services account.
+    Value: !Ref SharedServicesAccount
