@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Organizations structure including a NonProduction OU and an application-dev account.
+
+Parameters:
+  ParentId:
+    Type: String
+    Description: The ID of the parent root or OU where the NonProduction OU will be created.
+  AccountEmail:
+    Type: String
+    Description: The email address for the application-dev account. This must be a unique email not associated with another AWS account.
+
+Resources:
+  NonProductionOU:
+    Type: AWS::Organizations::OrganizationalUnit
+    Properties:
+      Name: NonProduction
+      ParentId: !Ref ParentId
+
+  ApplicationDevAccount:
+    Type: AWS::Organizations::Account
+    Properties:
+      AccountName: application-dev
+      Email: !Ref AccountEmail
+      ParentIds: 
+        - !Ref NonProductionOU
+
+Outputs:
+  NonProductionOUId:
+    Description: The ID of the NonProduction Organizational Unit.
+    Value: !Ref NonProductionOU
+  ApplicationDevAccountId:
+    Description: The ID of the application-dev account.
+    Value: !Ref ApplicationDevAccount
