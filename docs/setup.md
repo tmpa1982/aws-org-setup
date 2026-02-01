@@ -22,6 +22,7 @@ aws sso-admin list-instances
 
 ### Admin Role Setup
 
+```sh
 IDSTORE_ID=`aws sso-admin list-instances --query "Instances[0].IdentityStoreId" --output text`
 
 aws identitystore create-user \
@@ -54,6 +55,7 @@ aws sso-admin create-account-assignment \
     --principal-id $USER_ID
 
 aws sso-admin list-account-assignment-creation-status  --instance-arn $IDINSTANCE_ARN
+```
 
 Note: Reset password from IAM Identity Center Console
 
