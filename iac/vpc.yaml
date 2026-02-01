@@ -18,3 +18,9 @@ Resources:
       Tags:
         - Key: Name
           Value: PrivateSubnet
+
+Outputs:
+  PrivateSubnetId:
+    Value: !Ref PrivateSubnet
+    Export:
+      Name: !Sub "${AWS::StackName}-PrivateSubnetId"

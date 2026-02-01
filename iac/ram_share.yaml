@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Share VPC subnets with application accounts
+
+Parameters:
+  ApplicationAccountId:
+    Type: String
+    Description: AWS Account ID to share private subnets with
+
+  PrivateSubnetId:
+    Type: String
+    Description: Private subnet ID to share
+
+Resources:
+  SubnetShare:
+    Type: AWS::RAM::ResourceShare
+    Properties:
+      Name: SharedVPC-PrivateSubnets
+      AllowExternalPrincipals: false
+      Principals:
+        - !Ref ApplicationAccountId
+      ResourceArns:
+        - !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:subnet/${PrivateSubnetId}'
+
+Outputs:
+  ResourceShareArn:
+    Value: !Ref SubnetShare
