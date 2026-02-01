@@ -16,6 +16,7 @@ aws cloudformation deploy `
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Deployment successful!"
     aws ec2 describe-vpcs --profile $profile --region $region --filters "Name=tag:Name,Values=MainVPC"
+    aws ec2 describe-subnets --profile $profile --region $region --filters "Name=tag:Name,Values=PrivateSubnet"
 } else {
     Write-Host "Deployment failed."
 }
