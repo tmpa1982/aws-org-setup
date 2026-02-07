@@ -10,16 +10,21 @@ Parameters:
     Type: String
     Description: Private subnet ID to share
 
+  PublicSubnetId:
+    Type: String
+    Description: Public subnet ID to share
+
 Resources:
   SubnetShare:
     Type: AWS::RAM::ResourceShare
     Properties:
-      Name: SharedVPC-PrivateSubnets
+      Name: SharedVPC-Subnets
       AllowExternalPrincipals: false
       Principals:
         - !Ref ApplicationAccountId
       ResourceArns:
         - !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:subnet/${PrivateSubnetId}'
+        - !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:subnet/${PublicSubnetId}'
 
 Outputs:
   ResourceShareArn:
