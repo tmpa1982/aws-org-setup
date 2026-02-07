@@ -2,6 +2,8 @@
 
 ## SSO for CLI
 
+### First time setup
+
 ```
 aws configure sso
 
@@ -22,6 +24,12 @@ CLI default output format (json if not specified) [None]: yaml-stream
 Profile name [AdministratorAccess-558460665868]: shared
 ```
 
+### Subsequent login
+
+```
+aws sso login --profile shared
+```
+
 ## Login to AWS Console
 
 https://d-9667a4e83f.awsapps.com/start
@@ -36,4 +44,10 @@ aws ram enable-sharing-with-aws-organization --profile admin
 
 ```
 powershell -ExecutionPolicy Bypass -File bin\deploy_vpc.ps1
+```
+
+## Log out
+
+```
+aws sso logout --profile shared
 ```
