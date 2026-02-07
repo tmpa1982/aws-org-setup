@@ -2,15 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Minimal EC2 instance in shared private subnet
 
 Parameters:
-  SubnetId:
+  PrivateSubnetId:
     Type: AWS::EC2::Subnet::Id
     Description: The ID of the shared private subnet
-    Default: subnet-089265d1dee282626
+
+  PublicSubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The ID of the shared public subnet
 
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: The ID of the shared VPC
-    Default: vpc-0875a5e1792f52493
 
   InstanceType:
     Type: String
@@ -44,10 +46,10 @@ Resources:
       Roles:
         - !Ref SSMAccessRole
 
-  InstanceSecurityGroup:
+  PrivateInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow internal traffic
+      GroupDescription: Allow internal traffic for private instance
       VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -56,23 +58,58 @@ Resources:
           CidrIp: 10.0.0.0/16
       Tags:
         - Key: Name
-          Value: DevInstanceSG
+          Value: PrivateInstanceSG
 
-  EC2Instance:
+  PublicInstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP/HTTPS traffic for public instance
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: PublicInstanceSG
+
+  PrivateAppInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref LatestAmiId
-      SubnetId: !Ref SubnetId
+      SubnetId: !Ref PrivateSubnetId
       IamInstanceProfile: !Ref InstanceProfile
       SecurityGroupIds:
-        - !Ref InstanceSecurityGroup
+        - !Ref PrivateInstanceSecurityGroup
       Tags:
         - Key: Name
-          Value: DevAppInstance
+          Value: PrivateAppInstance
+
+  PublicAppInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PublicSubnetId
+      IamInstanceProfile: !Ref InstanceProfile
+      SecurityGroupIds:
+        - !Ref PublicInstanceSecurityGroup
+      Tags:
+        - Key: Name
+          Value: PublicAppInstance
 
 Outputs:
-  InstanceId:
-    Value: !Ref EC2Instance
+  PrivateInstanceId:
+    Value: !Ref PrivateAppInstance
   PrivateIp:
-    Value: !GetAtt EC2Instance.PrivateIp
+    Value: !GetAtt PrivateAppInstance.PrivateIp
+  PublicInstanceId:
+    Value: !Ref PublicAppInstance
+  PublicIp:
+    Value: !GetAtt PublicAppInstance.PublicIp
