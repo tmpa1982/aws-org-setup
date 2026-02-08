@@ -49,6 +49,7 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*"
                   - !Sub "arn:aws:ssm:${AWS::Region}:*:document/SSM-SessionManagerRunShell"
+                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:session/*"
       Tags:
         - Key: Name
           Value: DevInstanceRole
@@ -100,6 +101,10 @@ Resources:
       IamInstanceProfile: !Ref InstanceProfile
       SecurityGroupIds:
         - !Ref PrivateInstanceSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
       Tags:
         - Key: Name
           Value: PrivateAppInstance
@@ -116,6 +121,10 @@ Resources:
           GroupSet:
             - !Ref PublicInstanceSecurityGroup
           SubnetId: !Ref PublicSubnetId
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
       Tags:
         - Key: Name
           Value: PublicAppInstance
