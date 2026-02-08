@@ -96,10 +96,13 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref LatestAmiId
-      SubnetId: !Ref PublicSubnetId
       IamInstanceProfile: !Ref InstanceProfile
-      SecurityGroupIds:
-        - !Ref PublicInstanceSecurityGroup
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: "0"
+          GroupSet:
+            - !Ref PublicInstanceSecurityGroup
+          SubnetId: !Ref PublicSubnetId
       Tags:
         - Key: Name
           Value: PublicAppInstance
