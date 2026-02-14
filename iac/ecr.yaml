@@ -33,6 +33,18 @@ Resources:
               }
             ]
           }
+      RepositoryPolicyText:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowDevAccountPull
+            Effect: Allow
+            Principal:
+              AWS: 
+                - "arn:aws:iam::317440775610:role/ecs-fargate-app-ExecutionRole-CXV8sHdtuc7a"
+            Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
 
 Outputs:
   RepositoryArn:
